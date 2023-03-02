@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Set;
+
 public class CircleEngine extends Thread {
 
     private Rectangle bounds;
@@ -47,6 +49,12 @@ public class CircleEngine extends Thread {
         bounds.set(x, y, width, height);
     }
 
+    Set<Circle> circles;
+
+    public void Set(Set<Circle> set) {
+        circles = set;
+    }
+
     public Rectangle getBounds() {
         return bounds;
     }
@@ -72,6 +80,15 @@ public class CircleEngine extends Thread {
         if (vector.x < 0 && !bounds.collisionLeft(circle) || vector.x > 0 && !bounds.collisionRight(circle)) {
             vector.x = -vector.x;
             circle.setRandomColor();
+        }
+        if (circles != null) {
+            for (Circle circle1 : circles) {
+                if (circle.contains(circle1)) {
+                    circle.setRandomColor();
+                    vector.y = -vector.y;
+                    vector.x = -vector.x;
+                }
+            }
         }
     }
 }

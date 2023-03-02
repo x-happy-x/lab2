@@ -1,10 +1,7 @@
 package org.example;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class Main {
@@ -31,10 +28,10 @@ public class Main {
             engine.setBounds(windowBounds);
             engine.setDelay((int) (window.getDelay() * Random.nextFloat(0.5f, 3)));
             engine.setListener(window::invalidate);
+           // engine.Set(circles.keySet());
             engine.start();
 
             window.add(circle);
-
             circles.put(circle, engine);
         }
 

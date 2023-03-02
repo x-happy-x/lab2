@@ -1,13 +1,11 @@
 package org.example;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 public class CircleControllerMouse extends MouseMotionAdapter {
-    private Circle circle;
-    private Rectangle bounds;
+    private final Circle circle;
+    private final Rectangle bounds;
     private EngineListener listener;
 
     public CircleControllerMouse(Circle circle, Rectangle bounds) {

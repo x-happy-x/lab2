@@ -37,6 +37,13 @@ public class Circle {
         return dx * dx + dy * dy < radius * radius;
     }
 
+    public boolean contains(Circle circle) {
+        double dx = circle.getX() - getX();
+        double dy = circle.getY() - getY();
+        double dr = circle.getRadius() + getRadius();
+        return dx * dx + dy * dy < dr * dr;
+    }
+
     public boolean contains(Vector vector) {
         return contains(vector.x, vector.y);
     }
