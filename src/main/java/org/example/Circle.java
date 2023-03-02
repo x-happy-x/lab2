@@ -4,16 +4,22 @@ import java.awt.*;
 
 public class Circle {
 
-    private int x;
-    private int y;
+    Vector position;
     private int radius;
     private Color color;
 
-    public Circle(int x, int y, int radius, Color color) {
-        this.x = x;
-        this.y = y;
+    public Circle(double x, double y, int radius, Color color) {
+        this.position = new Vector(x, y);
         this.radius = radius;
         this.color = color;
+    }
+
+    public Circle(double x, double y, int radius) {
+        this(x, y, radius, new Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)));
+    }
+
+    public void setRandomColor() {
+        color = new Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256));
     }
 
     public void setColor(Color color) {
@@ -24,31 +30,52 @@ public class Circle {
         this.radius = radius;
         return this;
     }
+
+    public boolean contains(double x, double y) {
+        double dx = x - getX();
+        double dy = y - getY();
+        return dx * dx + dy * dy < radius * radius;
+    }
+
+    public boolean contains(Vector vector) {
+        return contains(vector.x, vector.y);
+    }
+
     public int getRadius() {
         return radius;
     }
-    public Circle setX(int x) {
-        this.x = x;
-        return this;
+
+    public void setX(double x) {
+        this.position.x = x;
     }
-    public Circle setY(int y) {
-        this.y = y;
-        return this;
+
+    public void setY(double y) {
+        this.position.y = y;
     }
 
     public Color getColor() {
         return color;
     }
 
-    public int getX() {
-        return x;
+    public double getX() {
+        return position.x;
     }
-    public int getY() {
-        return y;
+
+    public double getY() {
+        return position.y;
+    }
+
+    public Vector getPosition() {
+        return position;
+    }
+
+    public void setPosition(int x, int y) {
+        setX(x);
+        setY(y);
     }
 
     public void paint(Graphics g) {
         g.setColor(color);
-        g.fillOval(x-radius, y-radius, radius*2, radius*2);
+        g.fillOval((int) (getX() - radius), (int) (getY() - radius), radius * 2, radius * 2);
     }
 }

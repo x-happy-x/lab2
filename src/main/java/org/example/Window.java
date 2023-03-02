@@ -3,68 +3,69 @@ package org.example;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Window extends Frame {
 
-    enum STATES {
-        RUN, STOP, PAUSE
-    }
-    private STATES STATE;
-    private List<Circle> circles;
-    private final Thread repainting = new Thread() {
-        @Override
-        public void run() {
-          while (STATE != STATES.STOP) {
-              if (STATE == STATES.RUN) {
-                  invalidate();
-              }
-              try {
-                  TimeUnit.MILLISECONDS.sleep(3);
-              } catch (InterruptedException e) {
-                  System.out.println(e.getLocalizedMessage());
-              }
-          }
+    private final List<Circle> circles;
+    private final BufferedImage bufImage;
+    private final Graphics bufGraphics;
+    private int delay = 20;
+    private final Thread validator = new Thread(() -> {
+        while (true) {
+            if (!isValid()) {
+                repaint();
+            }
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                Main.log.warning(e.getLocalizedMessage());
+            }
         }
-    };
+    });
 
     public Window(int width, int height) {
         super();
+
+        bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        bufGraphics = bufImage.createGraphics();
+
+        circles = new ArrayList<>();
         addWindowListener(new WindowAdapter() {
-            @Override
             public void windowClosing(WindowEvent e) {
-                stop();
                 System.exit(0);
             }
         });
         setSize(width, height);
         setVisible(true);
-        circles = new ArrayList<>();
+    }
+
+
+    @Override
+    public void paint(Graphics g) {
+        bufGraphics.setColor(Color.WHITE);
+        bufGraphics.fillRect(0,0, bufImage.getWidth(), bufImage.getHeight());
+        for (Circle circle : circles) {
+            circle.paint(bufGraphics);
+        }
+        g.drawImage(bufImage,0,0,getWidth(),getHeight(), null);
     }
 
     public void add(Circle circle) {
         circles.add(circle);
     }
 
-    @Override
-    public void paint(Graphics g) {
-        for (Circle circle : circles) {
-            circle.paint(g);
-        }
+    public void start() {
+        validator.start();
     }
 
-    public void run() {
-        STATE = STATES.RUN;
-        repainting.start();
+    public int getDelay() {
+        return delay;
     }
 
-    public void pause() {
-        STATE = STATES.PAUSE;
-    }
-
-    public void stop() {
-        STATE = STATES.STOP;
+    public void setDelay(int delay) {
+        this.delay = delay;
     }
 }
